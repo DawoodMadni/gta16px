@@ -10,6 +10,7 @@
 Officer::Officer(const sf::Vector2f &spwnPos) : officerTexture{}, officerSprite{officerTexture}, spawnLocation{spwnPos}
 {
     moveTimer = moveCooldown;
+    immunityTimer = immunityTime;
 }
 
 sf::FloatRect Officer::GetBounds() const
@@ -22,9 +23,15 @@ const sf::Sprite &Officer::GetSprite() const
     return officerSprite;
 }
 
+bool Officer::IsAlive() const { return alive; }
+
 void Officer::TakeDamage(int sourceDamage)
 {
-    health -= (sourceDamage - sourceDamage * (defense / 100));
+    if (immunityTimer <= 0.f && alive)
+    {
+        health -= (sourceDamage - sourceDamage * (defense / 100));
+        immunityTimer = immunityTime;
+    }
 
     if (health <= 0)
     {
@@ -55,6 +62,7 @@ void Officer::Update(float deltaTime, sf::View &camera, Player &player)
     if (!alive)
         return;
 
+    immunityTimer -= deltaTime;
     moveTimer -= deltaTime;
 
     if (moveTimer <= 0.f && !moving)
