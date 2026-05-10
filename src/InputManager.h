@@ -1,12 +1,15 @@
+#pragma once
+
 #include <unordered_map>
 
 class InputManager
 {
 public:
     bool IsActionActive(const std::string &action);
-    void Update();
+    sf::Vector2f &GetMousePosition(); // gets mouse position relative to center of the window
+    void Update(sf::RenderWindow &window, sf::View &camera);
 
 private:
     std::unordered_map<std::string, bool> actionMap{};
-    // Returns whether an action is active or not
+    sf::Vector2f mousePos;
 };
